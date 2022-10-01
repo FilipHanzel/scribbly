@@ -2,7 +2,16 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from flask import Blueprint, Flask, g, redirect, render_template, request, url_for
+from flask import (
+    Blueprint,
+    Flask,
+    g,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import (
     LoginManager,
     current_user,
@@ -125,6 +134,7 @@ def register_login_manager(login_manager: LoginManager) -> None:
     @login_manager.unauthorized_handler
     def unauthorized() -> Response:
         """Redirect to login page on every unauthorized request."""
+        session["login_message"] = "You cannot go there! Please log in."
         return redirect(url_for("auth.login"))
 
 
@@ -171,6 +181,8 @@ def register() -> Response | str:
             username=form.username.data,
             password=form.password.data,
         )
+
+        session["login_message"] = "Registration successful! Please log in."
         return redirect(url_for("auth.login"))
 
     return render_template("auth/register.html", register_form=form)
