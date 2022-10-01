@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if not current_user.is_authenticated %}
+        <form method="post" action="{{ url_for('auth.login') }}" novalidate>
+            {{ login_form.csrf_token }}
+            <fieldset>
+                {{ login_form.email.label }}
+                {{ login_form.email(size=20, placeholder="youremail@example.com") }}
+                <ul class="form-field-errors">
+                    {% if login_form.email.errors %}
+                        {% for error in login_form.email.errors %}<li>{{ error }}</li>{% endfor %}
+                    {% endif %}
+                </ul>
+            </fieldset>
+            <fieldset>
+                {{ login_form.password.label }}
+                {{ login_form.password(size=20, placeholder="password") }}
+                <ul class="form-field-errors">
+                    {% if login_form.password.errors %}
+                        {% for error in login_form.password.errors %}<li>{{ error }}</li>{% endfor %}
+                    {% endif %}
+                </ul>
+            </fieldset>
+            <fieldset>
+                {{ login_form.remember_me.label }}
+                {{ login_form.remember_me() }}
+            </fieldset>
+            <input type="submit" value="Login" />
+        </form>
+    {% else %}
+        <!-- Sanity check - unauthenticated user should not be here -->
+        Already logged in! Hi {{ current_user.username }}!
+    {% endif %}
+{% endblock %}

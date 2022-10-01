@@ -1,0 +1,9 @@
+__pycache__/
+venv/
+instance/
+
+# MyPy artifacts
+.mypy_cache/
+
+# Configuration file
+.env

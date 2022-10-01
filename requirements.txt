@@ -1,0 +1,9 @@
+email-validator
+eventlet
+flask
+flask-login
+flask-migrate
+flask-session
+flask-sqlalchemy
+flask-wtf
+python-dotenv
