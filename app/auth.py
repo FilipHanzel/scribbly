@@ -53,20 +53,13 @@ CONFIRM_VALIDATORS = [
 
 
 class LoginForm(FlaskForm):
-    email = EmailField(
-        "email",
-        validators=EMAIL_VALIDATORS,
-        name="email address",
-    )
+    email = EmailField("Email", validators=EMAIL_VALIDATORS, name="email address")
     password = PasswordField(
-        "password",
+        "Password",
         validators=PASSWORD_VALIDATORS,
         name="password",
     )
-    remember_me = BooleanField(
-        "remember_me",
-        name="remember me",
-    )
+    remember_me = BooleanField("Remember me", name="remember me")
 
     def validate(self) -> bool:
         """In addition to standard validation, check if user exists."""
@@ -85,22 +78,22 @@ class LoginForm(FlaskForm):
 
 class RegisterForm(FlaskForm):
     email = EmailField(
-        "email",
+        "Email",
         validators=EMAIL_VALIDATORS,
         name="email address",
     )
     username = StringField(
-        "username",
+        "Username",
         validators=USERNAME_VALIDATORS,
         name="username",
     )
     password = PasswordField(
-        "password",
+        "Password",
         validators=PASSWORD_VALIDATORS,
         name="password",
     )
     confirm = PasswordField(
-        "confirm password",
+        "Confirm password",
         validators=CONFIRM_VALIDATORS,
         name="confirmation",
     )
@@ -134,7 +127,7 @@ def register_login_manager(login_manager: LoginManager) -> None:
     @login_manager.unauthorized_handler
     def unauthorized() -> Response:
         """Redirect to login page on every unauthorized request."""
-        session["login_message"] = "You cannot go there! Please log in."
+        session["login_message"] = ["You cannot go there!", "Please log in."]
         return redirect(url_for("auth.login"))
 
 
@@ -182,7 +175,7 @@ def register() -> Response | str:
             password=form.password.data,
         )
 
-        session["login_message"] = "Registration successful! Please log in."
+        session["login_message"] = ["Registration successful!", "Please log in."]
         return redirect(url_for("auth.login"))
 
     return render_template("auth/register.html", register_form=form)

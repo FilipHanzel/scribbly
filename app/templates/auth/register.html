@@ -1,48 +1,67 @@
 {% extends "base.html" %}
 {% block content %}
-    {% if not current_user.is_authenticated %}
-        <form method="post" action="{{ url_for('auth.register') }}" novalidate>
-            {{ register_form.csrf_token }}
-            <fieldset>
-                {{ register_form.email.label }}
-                {{ register_form.email(size=20, placeholder="youremail@example.com") }}
-                <ul class="form-field-errors">
-                    {% if register_form.email.errors %}
-                        {% for error in register_form.email.errors %}<li>{{ error }}</li>{% endfor %}
-                    {% endif %}
-                </ul>
-            </fieldset>
-            <fieldset>
-                {{ register_form.username.label }}
-                {{ register_form.username(size=20, placeholder="username") }}
-                <ul class="form-field-errors">
-                    {% if register_form.username.errors %}
-                        {% for error in register_form.username.errors %}<li>{{ error }}</li>{% endfor %}
-                    {% endif %}
-                </ul>
-            </fieldset>
-            <fieldset>
-                {{ register_form.password.label }}
-                {{ register_form.password(size=20, placeholder="password") }}
-                <ul class="form-field-errors">
-                    {% if register_form.password.errors %}
-                        {% for error in register_form.password.errors %}<li>{{ error }}</li>{% endfor %}
-                    {% endif %}
-                </ul>
-            </fieldset>
-            <fieldset>
-                {{ register_form.confirm.label }}
-                {{ register_form.confirm(size=20, placeholder="confirm password") }}
-                <ul class="form-field-errors">
-                    {% if register_form.confirm.errors %}
-                        {% for error in register_form.confirm.errors %}<li>{{ error }}</li>{% endfor %}
-                    {% endif %}
-                </ul>
-            </fieldset>
-            <input type="submit" value="Register" />
-        </form>
-    {% else %}
-        <!-- Sanity check - unauthenticated user should not be here -->
-        Already logged in! Hi {{ current_user.username }}!
-    {% endif %}
+    <div id="register-content">
+        {% if not current_user.is_authenticated %}
+            <div class="sky-form-wrapper">
+
+                <div class="sky-title">Register</div>
+
+                <form class="sky-form"
+                      method="post"
+                      action="{{ url_for('auth.register') }}"
+                      novalidate>
+
+                    {{ register_form.csrf_token }}
+
+                    <fieldset class="sky-fieldset">
+                        {{ register_form.email(size=20, placeholder=" ") }}
+                        {{ register_form.email.label }}
+                        <ul class="form-errors">
+                            {% if register_form.email.errors %}
+                                {% for error in register_form.email.errors %}<li>{{ error }}</li>{% endfor %}
+                            {% endif %}
+                        </ul>
+                    </fieldset>
+
+                    <fieldset class="sky-fieldset">
+                        {{ register_form.username(size=20, placeholder=" ") }}
+                        {{ register_form.username.label }}
+                        <ul class="form-errors">
+                            {% if register_form.username.errors %}
+                                {% for error in register_form.username.errors %}<li>{{ error }}</li>{% endfor %}
+                            {% endif %}
+                        </ul>
+                    </fieldset>
+
+                    <fieldset class="sky-fieldset">
+                        {{ register_form.password(size=20, placeholder=" ") }}
+                        {{ register_form.password.label }}
+                        <ul class="form-errors">
+                            {% if register_form.password.errors %}
+                                {% for error in register_form.password.errors %}<li>{{ error }}</li>{% endfor %}
+                            {% endif %}
+                        </ul>
+                    </fieldset>
+
+                    <fieldset class="sky-fieldset">
+                        {{ register_form.confirm(size=20, placeholder=" ") }}
+                        {{ register_form.confirm.label }}
+                        <ul class="form-errors">
+                            {% if register_form.confirm.errors %}
+                                {% for error in register_form.confirm.errors %}<li>{{ error }}</li>{% endfor %}
+                            {% endif %}
+                        </ul>
+                    </fieldset>
+
+                    <input class="sky-btn-submit" type="submit" value="Register" />
+
+                </form>
+            </div>
+
+        {% else %}
+            <!-- Sanity check - unauthenticated user should not be here -->
+            Already logged in! Hi {{ current_user.username }}!
+        {% endif %}
+
+    </div>
 {% endblock %}
