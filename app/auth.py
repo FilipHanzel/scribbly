@@ -2,7 +2,17 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 
-from flask import Blueprint, Flask, g, redirect, render_template, request, url_for
+import sqlalchemy as sa
+from flask import (
+    Blueprint,
+    Flask,
+    g,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import (
     LoginManager,
     current_user,
@@ -45,26 +55,23 @@ CONFIRM_VALIDATORS = [
 
 class LoginForm(FlaskForm):
     email = EmailField(
-        "email",
+        "Email",
         validators=EMAIL_VALIDATORS,
-        name="email address",
+        name="email-address",
     )
     password = PasswordField(
-        "password",
+        "Password",
         validators=PASSWORD_VALIDATORS,
         name="password",
     )
-    remember_me = BooleanField(
-        "remember_me",
-        name="remember me",
-    )
+    remember_me = BooleanField("Remember me", name="remember me")
 
     def validate(self) -> bool:
         """In addition to standard validation, check if user exists."""
         if not super().validate():
             return False
 
-        user = User.get(self.email.data)
+        user = User.get_by_email(self.email.data)
         if not user or not user.check_password(self.password.data):
             msg = "Incorrect email or password."
             self.email.errors.append(msg)
@@ -76,22 +83,22 @@ class LoginForm(FlaskForm):
 
 class RegisterForm(FlaskForm):
     email = EmailField(
-        "email",
+        "Email",
         validators=EMAIL_VALIDATORS,
-        name="email address",
+        name="email-address",
     )
     username = StringField(
-        "username",
+        "Username",
         validators=USERNAME_VALIDATORS,
         name="username",
     )
     password = PasswordField(
-        "password",
+        "Password",
         validators=PASSWORD_VALIDATORS,
         name="password",
     )
     confirm = PasswordField(
-        "confirm password",
+        "Confirm password",
         validators=CONFIRM_VALIDATORS,
         name="confirmation",
     )
@@ -101,12 +108,52 @@ class RegisterForm(FlaskForm):
         if not super().validate():
             return False
 
-        if User.get(self.email.data):
+        if not User.is_email_available(self.email.data):
             self.email.errors.append("Email address already taken.")
             return False
 
         if not User.is_username_available(self.username.data):
             self.username.errors.append("Username already taken.")
+            return False
+
+        return True
+
+
+class ProfileForm(FlaskForm):
+    email = EmailField(
+        "Email",
+        validators=EMAIL_VALIDATORS,
+        name="email-address",
+    )
+    username = StringField(
+        "Username",
+        validators=USERNAME_VALIDATORS,
+        name="username",
+    )
+
+    def validate(self) -> bool:
+        """In addition to standard validation, check if email and/or username are taken."""
+        print("VALIDATING!")
+        if not super().validate():
+            return False
+
+        if not current_user.is_authenticated:
+            return False
+
+        # Look for different user with the same username or email
+        user = User.query.filter(
+            User.id != current_user.id,
+            sa.or_(
+                User.username == self.username.data,
+                User.email == self.email.data,
+            ),
+        ).first()
+
+        if user is not None:
+            if user.email == current_user.email:
+                self.email.errors.append("Email address already taken.")
+            if user.username == current_user.username:
+                self.username.errors.append("Username already taken.")
             return False
 
         return True
@@ -125,6 +172,7 @@ def register_login_manager(login_manager: LoginManager) -> None:
     @login_manager.unauthorized_handler
     def unauthorized() -> Response:
         """Redirect to login page on every unauthorized request."""
+        session["login_message"] = ["You cannot go there!", "Please log in."]
         return redirect(url_for("auth.login"))
 
 
@@ -144,12 +192,11 @@ def login() -> Response | str:
     form = LoginForm()
     if form.validate_on_submit():
 
-        user = User.get(form.email.data)
+        user = User.get_by_email(form.email.data)
         login_user(user, remember=form.remember_me.data)
-
         return redirect(url_for("home"))
 
-    return render_template("auth/login.html", login_form=form)
+    return render_template("login.html", login_form=form)
 
 
 @bp.route("/logout")
@@ -167,16 +214,29 @@ def register() -> Response | str:
     form = RegisterForm()
     if form.validate_on_submit():
         User.add(
-            email=form.email.data,
+            email=form.email.data.strip(),
             username=form.username.data,
             password=form.password.data,
         )
+
+        session["login_message"] = ["Registration successful!", "Please log in."]
         return redirect(url_for("auth.login"))
 
-    return render_template("auth/register.html", register_form=form)
+    return render_template("register.html", register_form=form)
 
 
 @bp.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile() -> str:
-    return render_template("auth/profile.html")
+
+    form = ProfileForm()
+
+    if form.validate_on_submit():
+        current_user.update(
+            email=form.email.data,
+            username=form.username.data,
+        )
+
+    form.email.data = current_user.email
+    form.username.data = current_user.username
+    return render_template("profile.html", profile_form=form)

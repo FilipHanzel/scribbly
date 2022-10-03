@@ -65,7 +65,7 @@ function submitHandler(fields, event) {
 
   // Validate each field separately
   for (let field of fields) {
-    const errorsList = field.parentNode.querySelector(".form-field-errors");
+    const errorsList = field.parentNode.querySelector(".form-errors");
 
     if (errorsList) errorsList.replaceChildren();
 

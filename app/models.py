@@ -1,3 +1,12 @@
+"""
+ORM models.
+
+Models implement only the most basic functionality.
+More complex queries are implemented in the methods
+responsible for given functionality.
+"""
+
+
 from __future__ import annotations
 
 from typing import Optional
@@ -31,7 +40,7 @@ class User(db.Model, UserMixin):  # type: ignore
         db.session.commit()
 
     @classmethod
-    def get(cls, email: str) -> Optional[User]:
+    def get_by_email(cls, email: str) -> Optional[User]:
         return cls.query.filter_by(email=email).first()
 
     @classmethod
@@ -39,11 +48,31 @@ class User(db.Model, UserMixin):  # type: ignore
         return cls.query.get(id)
 
     @classmethod
+    def is_email_available(cls, email: str) -> bool:
+        return cls.get_by_email(email) is None
+
+    @classmethod
     def is_username_available(cls, username: str) -> bool:
         return cls.query.filter_by(username=username).first() is None
 
     def check_password(self, password: str) -> bool:
         return check_password_hash(self.password, password)
+
+    def update(
+        self,
+        email: Optional[str] = None,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+    ) -> None:
+        if email is not None:
+            self.email = email
+        if username is not None:
+            self.username = username
+        if password is not None:
+            self.password = generate_password_hash(password, method="sha256")
+
+        if any([email, username, password]):
+            db.session.commit()
 
 
 def register_db_utils(app: Flask) -> None:

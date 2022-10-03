@@ -13,20 +13,30 @@
     </head>
 
     <body>
-        <nav>
-            <a href="{{ url_for('home') }}">Home</a>
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('auth.profile') }}">Profile</a>
-                <a href="{{ url_for('auth.logout') }}">Logout</a>
-            {% else %}
-                <a href="{{ url_for('auth.login') }}">Login</a>
-                <a href="{{ url_for('auth.register') }}">Register</a>
-            {% endif %}
-        </nav>
+
         <content>
             {% block content %}{% endblock %}
         </content>
-        <script type="module" src="{{ url_for('static', filename='js/form_validation.js') }}"></script>
+
+        <nav>
+            <a id="nav-hero" href="{{ url_for('home') }}">Scribbly</a>
+
+            <div id="nav-spacing"></div>
+
+            <div id="nav-icon"></div>
+
+            <div id="nav-links">
+                {% if current_user.is_authenticated %}
+                    <a href="{{ url_for('auth.profile') }}">Profile</a>
+                    <a href="{{ url_for('auth.logout') }}">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('auth.login') }}">Login</a>
+                    <a href="{{ url_for('auth.register') }}">Register</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <script type="text/javascript" src="{{ url_for('static', filename='js/nav.js') }}"></script>
         {% block script %}{% endblock %}
     </body>
 

@@ -1,0 +1,241 @@
+/* Hack for annoying autofill styles on chrome */
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 0s, color 0s;
+  transition-delay: 999999999s;
+}
+
+/*
+
+Common
+
+*/
+
+:root {
+  --warn-yellow: #f3ed77;
+}
+
+.auth-form-wrapper {
+  margin: auto;
+
+  width: min(350px, 95%);
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  background-color: #ffffff50;
+}
+
+.auth-form-wrapper * {
+  font-size: 20px;
+  color: #fff;
+}
+
+.auth-form-wrapper .title {
+  font-size: 36px;
+
+  margin-left: min(120px, 10%);
+  margin-bottom: 20px;
+}
+
+/* Form */
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.auth-form fieldset {
+  margin: auto;
+  padding: 0;
+  width: 90%;
+  position: relative;
+  border: none;
+
+  --field-height: min(24px, 10vw);
+}
+
+.auth-form fieldset label,
+.auth-form fieldset input {
+  margin: 0;
+  padding: 0;
+  padding-top: var(--field-height);
+  width: 100%;
+}
+
+.auth-form fieldset label {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  transform-origin: 0 0;
+  transition: transform 0.1s ease-in-out;
+}
+
+.auth-form fieldset input {
+  border: none;
+  background-color: unset;
+  outline: none;
+}
+
+.auth-form fieldset input:not([disabled]) {
+  /* Currently only for profile edit form */
+  border-bottom: 2px solid #fff;
+  color: #1c406c;
+}
+
+/* Label interactions */
+
+.auth-form fieldset input:not([type="checkbox"]):focus + label,
+.auth-form
+  fieldset
+  input:not([type="checkbox"]):not(:placeholder-shown)
+  + label,
+.auth-form fieldset input:not([type="checkbox"]):hover + label {
+  transform: translateY(calc(var(--field-height) * -0.7)) scale(0.8);
+}
+
+/* Checkbox */
+
+.auth-form fieldset input[type="checkbox"],
+.auth-form fieldset input[type="checkbox"] + label {
+  padding: 0px;
+  margin: 0px;
+}
+
+.auth-form fieldset input[type="checkbox"] {
+  appearance: none;
+
+  width: var(--field-height);
+  height: var(--field-height);
+  border: 2px solid #fff;
+
+  margin-left: 15px;
+}
+
+.auth-form fieldset input[type="checkbox"] + label {
+  font-size: 18px;
+
+  margin-left: calc(var(--field-height) + 25px);
+  max-width: calc(100% - (var(--field-height) + 25px));
+  margin-top: 3px;
+}
+
+/* Checkbox interactions */
+
+.auth-form fieldset input[type="checkbox"] {
+  transition: background-color 0.1s ease;
+}
+
+.auth-form fieldset input[type="checkbox"]:hover,
+.auth-form fieldset label:hover ~ input[type="checkbox"] {
+  background-color: #b6efa9;
+}
+
+.auth-form fieldset input[type="checkbox"]:active,
+.auth-form fieldset label:active ~ input[type="checkbox"] {
+  background-color: #9ae38a;
+}
+
+.auth-form fieldset input[type="checkbox"]:checked {
+  background-image: url(../icons/check.svg);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* Validation erros */
+
+.auth-form .form-errors,
+.auth-form .form-errors li {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  color: var(--warn-yellow);
+}
+
+/* Submit button */
+
+.auth-form-wrapper .submit {
+  width: 90%;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  margin: auto;
+
+  border: none;
+}
+
+/* Submit interactions */
+
+.auth-form-wrapper .submit {
+  background-color: #1c406c;
+  color: #fff;
+
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+.auth-form-wrapper .submit:hover {
+  background-color: #b6efa9;
+  color: #1c406c;
+}
+
+.auth-form-wrapper .submit:active {
+  background-color: #9ae38a;
+}
+
+/*
+
+Auth form individual styles
+
+*/
+
+#login-content .auth-form-wrapper,
+#profile-content .auth-form-wrapper,
+#register-content .auth-form-wrapper {
+  margin: auto;
+  margin-top: min(100px, 10vh);
+}
+
+/* Messages over login form */
+
+.login-message {
+  text-align: center;
+}
+
+.login-message p {
+  margin: 0;
+  color: var(--warn-yellow);
+}
+
+.login-message p:last-child {
+  margin-bottom: 20px;
+}
+
+/* Login signup link */
+
+#login-signup-link,
+#login-signup-link a {
+  font-size: 18px;
+}
+
+#login-signup-link {
+  margin: auto;
+  margin-top: 10px;
+  margin-right: min(10vw, 30px);
+  text-align: right;
+}
+
+#login-signup-link a:hover {
+  color: #1c406c;
+}
+
+#login-signup-link a:active {
+  color: #b6efa9;
+}
+
+/* Hiding profile buttons to prevent jitter on load */
+
+#profile-content .submit#submitBtn,
+#profile-content .submit#cancelBtn {
+  display: none;
+}
