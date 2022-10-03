@@ -1,64 +1,66 @@
 {% extends "base.html" %}
+
+{% block style %}<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/auth.css')}}"/>{% endblock %}
+
 {% block content %}
     <div id="login-content">
-        {% if not current_user.is_authenticated %}
-            <div class="sky-form-wrapper">
+        <div class="auth-form-wrapper">
 
-                <div class="sky-message">
-                    {% if session.login_message %}
-                        {% for line in session.pop("login_message") %}
-                            <p>{{ line }}</p>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-
-                <div class="sky-title">Login</div>
-
-                <form class="sky-form"
-                      method="post"
-                      action="{{ url_for('auth.login') }}"
-                      novalidate>
-
-                    {{ login_form.csrf_token }}
-
-                    <fieldset class="sky-fieldset">
-                        {{ login_form.email(size=20, placeholder=" ") }}
-                        {{ login_form.email.label }}
-                        <ul class="form-errors">
-                            {% if login_form.email.errors %}
-                                {% for error in login_form.email.errors %}<li>{{ error }}</li>{% endfor %}
-                            {% endif %}
-                        </ul>
-                    </fieldset>
-
-                    <fieldset class="sky-fieldset">
-                        {{ login_form.password(size=20, placeholder=" ") }}
-                        {{ login_form.password.label }}
-                        <ul class="form-errors">
-                            {% if login_form.password.errors %}
-                                {% for error in login_form.password.errors %}<li>{{ error }}</li>{% endfor %}
-                            {% endif %}
-                        </ul>
-                    </fieldset>
-
-                    <fieldset class="sky-fieldset">
-                        {{ login_form.remember_me() }}
-                        {{ login_form.remember_me.label }}
-                    </fieldset>
-
-                    <input class="sky-btn-submit" type="submit" value="Login" />
-
-                </form>
-
-                <div id="login-signup-link">
-                    No account yet? <a href="{{ url_for('auth.register') }}">Sign up</a>
-                </div>
+            <div class="login-message">
+                {% if session.login_message %}
+                    {% for line in session.pop("login_message") %}
+                        <p>{{ line }}</p>
+                    {% endfor %}
+                {% endif %}
             </div>
 
-        {% else %}
-            <!-- Sanity check - unauthenticated user should not be here -->
-            Already logged in! Hi {{ current_user.username }}!
-        {% endif %}
+            <div class="title">Login</div>
+
+            <form class="auth-form"
+                  method="post"
+                  action="{{ url_for('auth.login') }}"
+                  novalidate>
+
+                {{ login_form.csrf_token }}
+
+                <fieldset>
+                    {{ login_form.email(size=20, placeholder=" ") }}
+                    {{ login_form.email.label }}
+                    <ul class="form-errors">
+                        {% if login_form.email.errors %}
+                            {% for error in login_form.email.errors %}<li>{{ error }}</li>{% endfor %}
+                        {% endif %}
+                    </ul>
+                </fieldset>
+
+                <fieldset>
+                    {{ login_form.password(size=20, placeholder=" ") }}
+                    {{ login_form.password.label }}
+                    <ul class="form-errors">
+                        {% if login_form.password.errors %}
+                            {% for error in login_form.password.errors %}<li>{{ error }}</li>{% endfor %}
+                        {% endif %}
+                    </ul>
+                </fieldset>
+
+                <fieldset>
+                    {{ login_form.remember_me() }}
+                    {{ login_form.remember_me.label }}
+                </fieldset>
+
+                <input class="submit" type="submit" value="Login" />
+
+            </form>
+
+            <div id="login-signup-link">
+                No account yet? <a href="{{ url_for('auth.register') }}">Sign up</a>
+            </div>
+        </div>
 
     </div>
+{% endblock %}
+
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename='js/form_validation.js') }}"></script>
 {% endblock %}
