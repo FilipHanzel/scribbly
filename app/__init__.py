@@ -12,8 +12,8 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_session import Session
 
-from app import auth
 from app.models import db, register_db_utils
+from app.routes import auth, home, project
 
 __all__: list[str] = []
 
@@ -73,6 +73,12 @@ def setup_auth(app: Flask) -> None:
     app.register_blueprint(auth.bp)
 
 
+def setup_blueprints(app: Flask) -> None:
+    """Register all remaining blueprints."""
+    app.register_blueprint(home.bp)
+    app.register_blueprint(project.bp)
+
+
 def create_app() -> Flask:
     """Flask application factory function."""
     app = Flask(
@@ -90,6 +96,7 @@ def create_app() -> Flask:
     setup_session(app)
     setup_database(app)
     setup_auth(app)
+    setup_blueprints(app)
 
     @app.cli.command("run-eventlet")
     def run_eventlet() -> None:
@@ -110,9 +117,5 @@ def create_app() -> Flask:
             print("[INFO] Starting eventlet...")
             eventlet_socket = eventlet.listen((address, port))
             wsgi.server(eventlet_socket, app, debug=False)
-
-    @app.route("/")
-    def home() -> str:
-        return render_template("home.html")
 
     return app
