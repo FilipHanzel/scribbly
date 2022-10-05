@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block style %}<link rel="stylesheet"
+      href="{{ url_for('static', filename='css/project.css')}}"/>{% endblock %}
+
+{% block content %}
+    {% if project %}
+        <p>{{ project.id }}</p>
+        <p>{{ project.name }}</p>
+        <p>{{ project.description }}</p>
+    {% else %}
+        UNKNOWN PROJECT!
+    {% endif %}
+{% endblock %}

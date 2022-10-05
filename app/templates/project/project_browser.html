@@ -11,6 +11,7 @@
                 <p>name: {{ project.name }}</p>
                 <p>created_at: {{ project.created_at }}</p>
                 <p>creator_id: {{ project.owner_id }}</p>
+                <a href="{{ url_for('project.project', id=project.id) }}">link</a>
             </div>
         {% endfor %}
     {% else %}
