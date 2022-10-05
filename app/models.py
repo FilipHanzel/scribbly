@@ -19,6 +19,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 db = SQLAlchemy()
 
+association_user_project = db.Table(
+    "user_project",
+    db.Column("user_id", db.Integer(), db.ForeignKey("user.id")),
+    db.Column("project_id", db.Integer(), db.ForeignKey("project.id")),
+)
+
 
 class User(db.Model, UserMixin):  # type: ignore
     __tablename__ = "user"
@@ -31,6 +37,10 @@ class User(db.Model, UserMixin):  # type: ignore
 
     # Relations with Project
     owned_projects = db.relationship("Project", back_populates="owner")
+
+    projects = db.relationship(
+        "Project", secondary=association_user_project, back_populates="participants"
+    )
 
     @classmethod
     def add(cls, email: str, username: str, password: str) -> User:
@@ -92,9 +102,16 @@ class Project(db.Model):  # type: ignore
     owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     owner = db.relationship("User", back_populates="owned_projects")
 
+    participants = db.relationship(
+        "User", secondary=association_user_project, back_populates="projects"
+    )
+
     @classmethod
-    def add(cls, name: str, description: Optional[str], owner_id: int) -> Project:
-        project = cls(name=name, description=description, owner_id=owner_id)
+    def add(cls, name: str, description: Optional[str], owner: User) -> Project:
+        project = cls(name=name, description=description, owner_id=owner.id)
+        # Make sure owner is also a participant in the project
+        project.participants.append(owner)
+
         db.session.add(project)
         db.session.commit()
 
@@ -116,9 +133,12 @@ def register_db_utils(app: Flask) -> None:
             db.session.add(user_b)
             db.session.add(user_c)
 
-            project_a = Project.add("niceOne", "A description.", user_a.id)
-            project_b = Project.add("myProject", None, user_a.id)
-            project_c = Project.add("princess", "No need for description.", user_c.id)
+            project_a = Project.add("niceOne", "A description.", user_a)
+            project_b = Project.add("myProject", None, user_a)
+            project_c = Project.add("princess", "No need for description.", user_c)
+
+            project_a.participants.append(user_b)
+            project_a.participants.append(user_c)
 
             db.session.add(project_a)
             db.session.add(project_b)

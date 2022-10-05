@@ -4,11 +4,18 @@
       href="{{ url_for('static', filename='css/project.css')}}"/>{% endblock %}
 
 {% block content %}
+
     {% if project %}
         <p>{{ project.id }}</p>
         <p>{{ project.name }}</p>
         <p>{{ project.description }}</p>
+        {% if participants %}
+            <ul>
+                {% for participant in participants %}<li>{{ participant }}</li>{% endfor %}
+            </ul>
+        {% endif %}
     {% else %}
         UNKNOWN PROJECT!
     {% endif %}
+
 {% endblock %}

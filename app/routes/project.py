@@ -13,7 +13,9 @@ bp = Blueprint(
 @login_required
 def projects() -> str:
     return render_template(
-        "project/project_browser.html", owned_projects=current_user.owned_projects
+        "project/project_browser.html",
+        owned_projects=current_user.owned_projects,
+        projects=current_user.projects,
     )
 
 
@@ -21,9 +23,20 @@ def projects() -> str:
 @login_required
 def project(id: str) -> str:
     project = Project.query.get(id)
+    participants = None
 
-    # Check if it's a project that user doesn't have access to
-    if project is not None and project.owner_id != current_user.id:
-        project = None
+    if project is not None:
+        # Check if it's a project that user has access to
+        is_owner = current_user.id == project.owner_id
+        is_participant = current_user in project.participants
 
-    return render_template("project/project.html", project=project)
+        if not is_owner and not is_participant:
+            project = None
+        else:
+            participants = project.participants
+
+    return render_template(
+        "project/project.html",
+        project=project,
+        participants=participants,
+    )
