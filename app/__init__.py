@@ -40,7 +40,7 @@ def setup_session(app: Flask) -> None:
     session_path = os.path.join(app.instance_path, "sessions")
     app.config["SESSION_FILE_DIR"] = session_path
     app.config["SESSION_TYPE"] = "filesystem"
-    app.config["SESSION_COOKIE_SECURE"] = True
+    app.config["SESSION_COOKIE_SECURE"] = False
     app.config["SESSION_COOKIE_HTTPONLY"] = True
 
     Session(app)
