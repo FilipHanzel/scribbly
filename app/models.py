@@ -129,20 +129,18 @@ def register_db_utils(app: Flask) -> None:
             user_b = User.add("email@example.com", "someone", "abcd1234")
             user_c = User.add("someone@somewhere.com", "luigi", "betterthanmario")
 
-            db.session.add(user_a)
-            db.session.add(user_b)
-            db.session.add(user_c)
-
             project_a = Project.add("niceOne", "A description.", user_a)
-            project_b = Project.add("myProject", None, user_a)
-            project_c = Project.add("princess", "No need for description.", user_c)
+            Project.add("myProject", None, user_a)
+            Project.add("princess", "No need for description.", user_c)
+            Project.add("someProject", "Some description.", user_a)
+            Project.add("someOtherProject", "Description.", user_a)
+            Project.add("anotherProject", "Another description.", user_a)
+            Project.add("yetAnotherProject", None, user_a)
+            project_h = Project.add("andAnotherOne", None, user_b)
 
             project_a.participants.append(user_b)
             project_a.participants.append(user_c)
-
-            db.session.add(project_a)
-            db.session.add(project_b)
-            db.session.add(project_c)
+            project_h.participants.append(user_a)
 
             db.session.commit()
 
