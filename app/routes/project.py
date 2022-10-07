@@ -70,7 +70,7 @@ def rotate_recent_projects_ids(
 
 @bp.route("/projects")
 @login_required
-def projects() -> str:
+def projects_browser() -> str:
 
     # Get recent projects (make sure current_user has access to them)
     cookie_name = get_recent_projects_cookie_name()

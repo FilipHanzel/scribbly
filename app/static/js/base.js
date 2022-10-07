@@ -1,5 +1,5 @@
 /**
- * Navigation handling
+ * Navigation handling.
  *
  */
 
