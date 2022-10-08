@@ -1,4 +1,4 @@
-/* Hack for annoying autofill styles on chrome */
+/* || Hack for annoying autofill styles on chrome */
 
 input:-webkit-autofill,
 input:-webkit-autofill:focus {
@@ -6,17 +6,14 @@ input:-webkit-autofill:focus {
   transition-delay: 999999999s;
 }
 
-/*
-
-Common
-
-*/
-
-:root {
-  --warn-yellow: #f3ed77;
-}
+/* || Common */
 
 .auth-form-wrapper {
+  --warn-yellow: #f3ed77;
+  --dark-blue: #1c406c;
+  --light-green: #b6efa9;
+  --dark-green: #9ae38a;
+
   margin: auto;
 
   width: min(350px, 95%);
@@ -24,6 +21,7 @@ Common
   padding-bottom: 30px;
 
   background-color: #ffffff50;
+  box-shadow: 5px 5px 15px 0 rgba(0, 0, 0, 0.3);
 }
 
 .auth-form-wrapper * {
@@ -80,9 +78,8 @@ Common
 }
 
 .auth-form fieldset input:not([disabled]) {
-  /* Currently only for profile edit form */
   border-bottom: 2px solid #fff;
-  color: #1c406c;
+  color: var(--dark-blue);
 }
 
 /* Label interactions */
@@ -100,6 +97,7 @@ Common
 
 .auth-form fieldset input[type="checkbox"],
 .auth-form fieldset input[type="checkbox"] + label {
+  cursor: pointer;
   padding: 0px;
   margin: 0px;
 }
@@ -130,12 +128,12 @@ Common
 
 .auth-form fieldset input[type="checkbox"]:hover,
 .auth-form fieldset label:hover ~ input[type="checkbox"] {
-  background-color: #b6efa9;
+  background-color: var(--light-green);
 }
 
 .auth-form fieldset input[type="checkbox"]:active,
 .auth-form fieldset label:active ~ input[type="checkbox"] {
-  background-color: #9ae38a;
+  background-color: var(--dark-green);
 }
 
 .auth-form fieldset input[type="checkbox"]:checked {
@@ -156,7 +154,9 @@ Common
 
 /* Submit button */
 
-.auth-form-wrapper .submit {
+.auth-form-wrapper input[type="submit"] {
+  cursor: pointer;
+
   width: 90%;
   padding-top: 7px;
   padding-bottom: 7px;
@@ -165,29 +165,23 @@ Common
   border: none;
 }
 
-/* Submit interactions */
-
-.auth-form-wrapper .submit {
-  background-color: #1c406c;
+.auth-form-wrapper input[type="submit"] {
+  background-color: var(--dark-blue);
   color: #fff;
 
   transition: background-color 0.1s ease, color 0.1s ease;
 }
 
-.auth-form-wrapper .submit:hover {
-  background-color: #b6efa9;
-  color: #1c406c;
+.auth-form-wrapper input[type="submit"]:hover {
+  background-color: var(--light-green);
+  color: var(--dark-blue);
 }
 
-.auth-form-wrapper .submit:active {
-  background-color: #9ae38a;
+.auth-form-wrapper input[type="submit"]:active {
+  background-color: var(--dark-green);
 }
 
-/*
-
-Auth form individual styles
-
-*/
+/* || Form specific */
 
 #login-content .auth-form-wrapper,
 #profile-content .auth-form-wrapper,
@@ -226,16 +220,16 @@ Auth form individual styles
 }
 
 #login-signup-link a:hover {
-  color: #1c406c;
+  color: var(--dark-blue);
 }
 
 #login-signup-link a:active {
-  color: #b6efa9;
+  color: var(--light-green);
 }
 
 /* Hiding profile buttons to prevent jitter on load */
 
-#profile-content .submit#submitBtn,
-#profile-content .submit#cancelBtn {
+#profile-content input[type="submit"] #submitBtn,
+#profile-content input[type="submit"] #cancelBtn {
   display: none;
 }

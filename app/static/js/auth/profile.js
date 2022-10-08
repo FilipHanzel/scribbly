@@ -1,6 +1,5 @@
 /**
  * Enabling/disabling editing user data on profile page.
- *
  */
 
 const form = document.querySelector("#profile-content form");

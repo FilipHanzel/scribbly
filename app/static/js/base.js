@@ -1,6 +1,5 @@
 /**
- * Navigation handling.
- *
+ * Responsive navigation handling.
  */
 
 const navBtn = document.querySelector("#nav-icon");
