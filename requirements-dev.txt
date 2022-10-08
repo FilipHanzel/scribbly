@@ -1,8 +1,8 @@
 alembic[tz]
+autoflake
 black
 djlint
 isort
 mypy # Required in local env for pre-commit
 pre-commit
-pycln
 pydocstyle
