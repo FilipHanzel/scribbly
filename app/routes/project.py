@@ -70,7 +70,7 @@ def rotate_recent_projects_ids(
 
 @bp.route("/projects")
 @login_required
-def projects_browser() -> str:
+def browser() -> str:
 
     # Get recent projects (make sure current_user has access to them)
     cookie_name = get_recent_projects_cookie_name()
@@ -78,11 +78,17 @@ def projects_browser() -> str:
     recent_projects = get_recent_projects(recent_ids)
 
     return render_template(
-        "project/project_browser.html",
+        "project/browser.html",
         recent_projects=recent_projects,
         owned_projects=current_user.owned_projects,
         projects=current_user.projects,
     )
+
+
+@bp.route("/create-project")
+@login_required
+def create_project() -> str:
+    return render_template("project/create.html")
 
 
 @bp.route("/project/<project_id>")

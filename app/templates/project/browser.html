@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block style %}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/project/browser.css')}}"/>
+{% endblock %}
+
+{% block content %}
+    <div id="projects-browser-content">
+
+        <div class="projects-carousel-wrapper">
+            {% if recent_projects %}
+                <div class="projects-carousel">
+                    {% for project in recent_projects %}
+                        <a class="projects-carousel-element"
+                           href="{{ url_for('project.project', project_id=project.id) }}">
+                            <div>{{ project.name | truncate(64, True) }}</div>
+                            <div>
+                                <p>{{ project.description | truncate(128) if project.description }}</p>
+                            </div>
+                            <div>
+                                <div>Created at</div>
+                                <div>{{ project.created_at }}</div>
+                            </div>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div>No recently visited projects.</div>
+            {% endif %}
+        </div>
+
+        <div class="projects-list-wrapper">
+            <a id="projects-add-button"
+               href="{{ url_for('project.create_project') }}">
+                <img src="{{ url_for('static', filename='icons/add_window.svg') }}"/>
+                <span>Create new project</span>
+            </a>
+
+            <input id="projects-list-search-bar"
+                   type="text"
+                   placeholder="Search for projects"/>
+
+            <div class="projects-list">
+                {% if projects %}
+                    {% for project in projects %}
+                        <a class="projects-list-element"
+                           href="{{ url_for('project.project', project_id=project.id) }}">
+                            <span>{{ project.name | truncate(64, True) }}</span>
+                            <span>{{ project.description | truncate(128) if project.description }}</span>
+                            <span></span>
+                            <span>{{ project.created_at }}</span>
+                        </a>
+                    {% endfor %}
+                {% else %}
+                    No projects.
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename='js/project/browser.js') }}"></script>
+{% endblock %}

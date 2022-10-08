@@ -17,6 +17,6 @@ bp = Blueprint(
 @bp.route("/")
 def home() -> Response | str:
     if current_user.is_authenticated:
-        return redirect(url_for("project.projects_browser"))
+        return redirect(url_for("project.browser"))
 
     return render_template("home.html")
