@@ -16,10 +16,6 @@
 
     <body>
 
-        <content>
-            {% block content %}{% endblock %}
-        </content>
-
         <nav>
             <a id="nav-hero" href="{{ url_for('home.home') }}">Scribbly</a>
 
@@ -37,6 +33,10 @@
                 {% endif %}
             </div>
         </nav>
+
+        <content>
+            {% block content %}{% endblock %}
+        </content>
 
         <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
         {% block script %}{% endblock %}
