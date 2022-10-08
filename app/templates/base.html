@@ -7,6 +7,8 @@
         <title>
             {% block title %}Scribbly{% endblock %}
         </title>
+        <link rel="shortcut icon"
+              href="{{ url_for('static', filename='icons/favicon.svg') }}"/>
         <link rel="stylesheet"
               href="{{ url_for('static', filename='css/base.css') }}"/>
         {% block style %}{% endblock %}
@@ -14,12 +16,8 @@
 
     <body>
 
-        <content>
-            {% block content %}{% endblock %}
-        </content>
-
         <nav>
-            <a id="nav-hero" href="{{ url_for('home') }}">Scribbly</a>
+            <a id="nav-hero" href="{{ url_for('home.home') }}">Scribbly</a>
 
             <div id="nav-spacing"></div>
 
@@ -36,7 +34,11 @@
             </div>
         </nav>
 
-        <script type="text/javascript" src="{{ url_for('static', filename='js/nav.js') }}"></script>
+        <content>
+            {% block content %}{% endblock %}
+        </content>
+
+        <script type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
         {% block script %}{% endblock %}
     </body>
 

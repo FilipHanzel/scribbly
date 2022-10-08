@@ -1,8 +1,6 @@
 /**
- * Custom form validation handling.
- *
- * Unifies the visuals of server-side and client-side form validation.
- *
+ * Custom form validation handling that unifies the visuals
+ * of server-side and client-side form validation.
  */
 
 /**

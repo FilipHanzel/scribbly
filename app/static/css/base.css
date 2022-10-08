@@ -4,7 +4,7 @@ body {
   margin: 0;
 
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
 
   font-family: "Poppins", "Helvetica", sans-serif;
 }
@@ -14,6 +14,7 @@ nav {
   --hero-color: #b6efa9;
 
   background-color: #1c406c;
+  box-shadow: 5px 5px 15px 0 rgba(0, 0, 0, 0.1);
   height: var(--nav-height);
 
   display: flex;
@@ -121,4 +122,33 @@ nav a {
   #nav-icon {
     display: block;
   }
+}
+
+/* || Scrollbar */
+
+body {
+  overflow-y: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+content {
+  overflow: auto;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1c406c;
+  border-radius: 2.5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #2c66ad;
 }

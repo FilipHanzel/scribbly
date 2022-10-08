@@ -1,0 +1,239 @@
+#projects-browser-content {
+  padding-bottom: 2vh;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* || Common */
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* || Carousel */
+
+.projects-carousel-wrapper {
+  background-color: #ffffff33;
+  box-shadow: 5px 5px 15px 0 rgba(221, 145, 145, 0.1);
+}
+
+.projects-carousel {
+  display: flex;
+  flex-direction: row;
+
+  max-width: fit-content;
+  margin: auto;
+  margin-bottom: 10px;
+
+  overflow-x: auto;
+}
+
+.projects-carousel::-webkit-scrollbar {
+  height: 7px;
+}
+
+.projects-carousel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.projects-carousel::-webkit-scrollbar-thumb {
+  background: #1c406c;
+  border-radius: 2.5px;
+}
+
+.projects-carousel::-webkit-scrollbar-thumb:hover {
+  background: #2c66ad;
+}
+
+.projects-carousel-element {
+  min-width: 230px;
+  max-width: 230px;
+  margin: 10px;
+
+  border-radius: 5px;
+  overflow: hidden;
+
+  background-color: #ffffff90;
+  box-shadow: 5px 5px 15px 0 rgba(0, 0, 0, 0.1);
+
+  transition: transform 0.1s ease-in-out;
+}
+
+.projects-carousel-element:hover {
+  transform: scale(1.05);
+}
+
+/* Carousel card title */
+.projects-carousel-element > div:first-child {
+  padding: 5px 10px;
+  height: 20px;
+
+  background-color: #1c406c;
+  color: #fff;
+  font-weight: bold;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Carousel card description */
+
+.projects-carousel-element > div:nth-child(2) {
+  margin: 10px;
+  /* Fit 3 lines of text in case of js truncation failing */
+  min-height: 58px;
+  max-height: 58px;
+
+  overflow: hidden;
+}
+
+.projects-carousel-element > div:nth-child(2) p {
+  margin: 0;
+}
+
+.projects-carousel-element > div:nth-child(3) {
+  padding: 2px 5px;
+
+  background-color: #ffffffcc;
+  font-size: 14px;
+  font-style: italic;
+}
+
+@media screen and (max-width: 600px) {
+  .projects-carousel-wrapper {
+    display: none;
+  }
+}
+
+/* || Projects list */
+
+.projects-list-wrapper {
+  width: min(100%, 1000px);
+  margin: auto;
+  margin-top: 2vh;
+
+  display: flex;
+  flex-direction: column;
+}
+
+#projects-add-button {
+  width: fit-content;
+  margin: auto;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  transition: transform 0.1s ease-in-out;
+}
+
+#projects-add-button:hover {
+  transform: scale(1.05);
+}
+
+#projects-add-button img {
+  width: 30px;
+}
+
+#projects-add-button span {
+  font-size: 18px;
+  padding-left: 5px;
+}
+
+#projects-list-search-bar {
+  /* Subtract padding to stay centered */
+  width: calc(min(50%, 500px) - 40px);
+  margin: auto;
+  margin-top: 15px;
+
+  padding: 7px;
+  padding-left: 33px;
+  font-size: 18px;
+
+  background-image: url("../../icons/search.svg");
+  background-position: 5px 5px;
+  background-repeat: no-repeat;
+  background-size: 24px;
+
+  border: none;
+  outline: none;
+  background-color: #ffffffcc;
+  box-shadow: 5px 5px 15px 0 rgba(0, 0, 0, 0.1);
+
+  transition: background-color 0.1s ease-in-out;
+}
+
+#projects-list-search-bar:hover {
+  background-color: #ffffffee;
+}
+
+/* Filtering on search bar uses this to hide projects */
+.projects-list-element.hidden {
+  display: none;
+}
+
+.projects-list {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+}
+
+.projects-list-element {
+  margin: 3px;
+  padding: 5px;
+
+  border-left: 5px solid #1c406c;
+  background-color: #c6e5ff;
+  box-shadow: 5px 5px 15px 0 rgba(0, 0, 0, 0.1);
+  transition: background-color 0.1s ease-in-out;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+
+  overflow: hidden;
+}
+
+.projects-list-element:hover {
+  background-color: #e6f4ff;
+}
+
+.projects-list-element span:first-child {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.projects-list-element span:nth-child(2) {
+  padding-left: 10px;
+  opacity: 0.5;
+}
+
+.projects-list-element span:first-child,
+.projects-list-element span:nth-child(2) {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.projects-list-element span:nth-child(3) {
+  flex-shrink: 1;
+  flex-grow: 1;
+}
+
+.projects-list-element span:nth-child(4) {
+  opacity: 0.5;
+}
+
+@media screen and (max-width: 600px) {
+  #projects-list-search-bar {
+    width: 75%;
+  }
+
+  .projects-list {
+    margin: 5px;
+  }
+}

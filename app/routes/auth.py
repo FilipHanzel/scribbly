@@ -180,36 +180,35 @@ bp = Blueprint(
     name="auth",
     import_name=__name__,
     url_prefix="/auth",
-    template_folder="templates/auth",
 )
 
 
 @bp.route("/login", methods=["GET", "POST"])
 def login() -> Response | str:
     if current_user.is_authenticated:
-        return redirect(url_for("home"))
+        return redirect(url_for("home.home"))
 
     form = LoginForm()
     if form.validate_on_submit():
 
         user = User.get_by_email(form.email.data)
         login_user(user, remember=form.remember_me.data)
-        return redirect(url_for("home"))
+        return redirect(url_for("home.home"))
 
-    return render_template("login.html", login_form=form)
+    return render_template("auth/login.html", login_form=form)
 
 
 @bp.route("/logout")
 @login_required
 def logout() -> Response:
     logout_user()
-    return redirect(url_for("home"))
+    return redirect(url_for("home.home"))
 
 
 @bp.route("/register", methods=["GET", "POST"])
 def register() -> Response | str:
     if current_user.is_authenticated:
-        return redirect(url_for("home"))
+        return redirect(url_for("home.home"))
 
     form = RegisterForm()
     if form.validate_on_submit():
@@ -222,7 +221,7 @@ def register() -> Response | str:
         session["login_message"] = ["Registration successful!", "Please log in."]
         return redirect(url_for("auth.login"))
 
-    return render_template("register.html", register_form=form)
+    return render_template("auth/register.html", register_form=form)
 
 
 @bp.route("/profile", methods=["GET", "POST"])
@@ -239,4 +238,4 @@ def profile() -> str:
 
     form.email.data = current_user.email
     form.username.data = current_user.username
-    return render_template("profile.html", profile_form=form)
+    return render_template("auth/profile.html", profile_form=form)

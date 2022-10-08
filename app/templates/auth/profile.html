@@ -36,9 +36,9 @@
                     </ul>
                 </fieldset>
 
-                <input id="editBtn" class="submit" type="submit" value="Edit" />
-                <input id="submitBtn" class="submit" type="submit" value="Submit" />
-                <input id="cancelBtn" class="submit" type="submit" value="Cancel" />
+                <input id="editBtn" type="submit" value="Edit" />
+                <input id="submitBtn" type="submit" value="Submit" />
+                <input id="cancelBtn" type="submit" value="Cancel" />
 
             </form>
         </div>
@@ -47,6 +47,6 @@
 {% endblock %}
 
 {% block script %}
-    <script type="module" src="{{ url_for('static', filename='js/profile.js') }}"></script>
-    <script type="module" src="{{ url_for('static', filename='js/form_validation.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/auth/profile.js') }}"></script>
+    <script type="module" src="{{ url_for('static', filename='js/common/form_validation.js') }}"></script>
 {% endblock %}

@@ -19,6 +19,12 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 db = SQLAlchemy()
 
+association_user_project = db.Table(
+    "user_project",
+    db.Column("user_id", db.Integer(), db.ForeignKey("user.id")),
+    db.Column("project_id", db.Integer(), db.ForeignKey("project.id")),
+)
+
 
 class User(db.Model, UserMixin):  # type: ignore
     __tablename__ = "user"
@@ -29,8 +35,15 @@ class User(db.Model, UserMixin):  # type: ignore
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime(), server_default=func.now())
 
+    # Relations with Project
+    owned_projects = db.relationship("Project", back_populates="owner")
+
+    projects = db.relationship(
+        "Project", secondary=association_user_project, back_populates="participants"
+    )
+
     @classmethod
-    def add(cls, email: str, username: str, password: str) -> None:
+    def add(cls, email: str, username: str, password: str) -> User:
         user = cls(
             email=email,
             username=username,
@@ -38,6 +51,8 @@ class User(db.Model, UserMixin):  # type: ignore
         )
         db.session.add(user)
         db.session.commit()
+
+        return user
 
     @classmethod
     def get_by_email(cls, email: str) -> Optional[User]:
@@ -75,6 +90,34 @@ class User(db.Model, UserMixin):  # type: ignore
             db.session.commit()
 
 
+class Project(db.Model):  # type: ignore
+    __tablename__ = "project"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), unique=False, nullable=False)
+    description = db.Column(db.String(255), nullable=True)
+    created_at = db.Column(db.DateTime(), server_default=func.now())
+
+    # Relations with User
+    owner_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    owner = db.relationship("User", back_populates="owned_projects")
+
+    participants = db.relationship(
+        "User", secondary=association_user_project, back_populates="projects"
+    )
+
+    @classmethod
+    def add(cls, name: str, description: Optional[str], owner: User) -> Project:
+        project = cls(name=name, description=description, owner_id=owner.id)
+        # Make sure owner is also a participant in the project
+        project.participants.append(owner)
+
+        db.session.add(project)
+        db.session.commit()
+
+        return project
+
+
 def register_db_utils(app: Flask) -> None:
     """Database testing utilities."""
 
@@ -82,11 +125,24 @@ def register_db_utils(app: Flask) -> None:
     def db_fake_data() -> None:
         """Commit dummy data to the database."""
         with app.app_context():
-            User.add(
-                email="email@email.com",
-                username="username",
-                password="123456789",
-            )
+            user_a = User.add("email@email.com", "username", "123456789")
+            user_b = User.add("email@example.com", "someone", "abcd1234")
+            user_c = User.add("someone@somewhere.com", "luigi", "betterthanmario")
+
+            project_a = Project.add("niceOne", "A description.", user_a)
+            Project.add("myProject", None, user_a)
+            Project.add("princess", "No need for description.", user_c)
+            Project.add("someProject", "Some description.", user_a)
+            Project.add("someOtherProject", "Description.", user_a)
+            Project.add("anotherProject", "Another description.", user_a)
+            Project.add("yetAnotherProject", None, user_a)
+            project_h = Project.add("andAnotherOne", None, user_b)
+
+            project_a.participants.append(user_b)
+            project_a.participants.append(user_c)
+            project_h.participants.append(user_a)
+
+            db.session.commit()
 
     @app.cli.command("db-drop")
     def db_drop_data() -> None:
@@ -94,3 +150,7 @@ def register_db_utils(app: Flask) -> None:
         with app.app_context():
             db.drop_all()
             db.create_all()
+
+    @app.cli.command("db-test")
+    def db_test() -> None:
+        """Temporary method to test ORM during development."""

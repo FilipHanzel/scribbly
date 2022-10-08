@@ -7,3 +7,6 @@ instance/
 
 # Configuration file
 .env
+
+# Unnecessary db versions
+migrations/versions/
