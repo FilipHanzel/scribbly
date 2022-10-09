@@ -101,7 +101,7 @@ def generate_key() -> str:
 class Project(db.Model):  # type: ignore
     __tablename__ = "project"
 
-    id = db.Column(db.String(255), primary_key=True, default=generate_key)
+    id = db.Column(db.String(22), primary_key=True, default=generate_key)
     name = db.Column(db.String(255), unique=False, nullable=False)
     description = db.Column(db.String(2048), nullable=True)
     created_at = db.Column(db.DateTime(), server_default=func.now())
