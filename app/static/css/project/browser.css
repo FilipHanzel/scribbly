@@ -88,6 +88,7 @@ a {
   max-height: 58px;
 
   overflow: hidden;
+  word-break: break-word;
 }
 
 .projects-carousel-element > div:nth-child(2) p {

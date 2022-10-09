@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, redirect, url_for
 from flask_login import current_user
 
 if TYPE_CHECKING:
@@ -19,4 +19,4 @@ def home() -> Response | str:
     if current_user.is_authenticated:
         return redirect(url_for("project.browser"))
 
-    return render_template("home.html")
+    return redirect(url_for("auth.login"))

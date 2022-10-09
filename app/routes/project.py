@@ -1,7 +1,18 @@
 from __future__ import annotations
 
-from flask import Blueprint, Response, make_response, render_template, request
+from flask import (
+    Blueprint,
+    Response,
+    make_response,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user, login_required
+from flask_wtf import FlaskForm
+from wtforms.fields import StringField
+from wtforms.validators import Length
 
 from app.models import Project
 
@@ -45,7 +56,7 @@ def get_recent_projects(recent_projects_ids: list[str]) -> list[Project]:
         project
         for recent_id in recent_projects_ids
         for project in current_user.projects
-        if str(project.id) == recent_id
+        if project.id == recent_id
     ]
 
 
@@ -85,10 +96,44 @@ def browser() -> str:
     )
 
 
-@bp.route("/create-project")
+class CreateProjectForm(FlaskForm):
+    name = StringField(
+        "Name",
+        validators=[
+            Length(min=4, message="Project name must be at least 4 characters long."),
+            Length(
+                max=255, message="Project name cannot be longer than 255 characters."
+            ),
+        ],
+        name="name",
+    )
+    description = StringField(
+        "Description",
+        validators=[
+            Length(
+                max=2048,
+                message="Project description cannot be longer than 2048 characters.",
+            ),
+        ],
+    )
+
+
+@bp.route("/create-project", methods=["GET", "POST"])
 @login_required
-def create_project() -> str:
-    return render_template("project/create.html")
+def create() -> Response | str:
+
+    form = CreateProjectForm()
+    if form.validate_on_submit():
+        project = Project.add(
+            name=form.name.data, description=form.description.data, owner=current_user
+        )
+
+        if project is None:
+            return "Failed to create project.", 500
+
+        return redirect(url_for("project.project", project_id=project.id))
+
+    return render_template("project/create.html", create_project_form=form)
 
 
 @bp.route("/project/<project_id>")
