@@ -9,11 +9,14 @@ responsible for given functionality.
 
 from __future__ import annotations
 
+from base64 import urlsafe_b64encode
 from typing import Optional
+from uuid import uuid4
 
 from flask import Flask
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql import func
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -22,7 +25,7 @@ db = SQLAlchemy()
 association_user_project = db.Table(
     "user_project",
     db.Column("user_id", db.Integer(), db.ForeignKey("user.id")),
-    db.Column("project_id", db.Integer(), db.ForeignKey("project.id")),
+    db.Column("project_id", db.String(), db.ForeignKey("project.id")),
 )
 
 
@@ -90,12 +93,17 @@ class User(db.Model, UserMixin):  # type: ignore
             db.session.commit()
 
 
+def generate_key() -> str:
+    """Generate random url safe string."""
+    return urlsafe_b64encode(uuid4().bytes).decode("utf-8").rstrip("=")
+
+
 class Project(db.Model):  # type: ignore
     __tablename__ = "project"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String(255), primary_key=True, default=generate_key)
     name = db.Column(db.String(255), unique=False, nullable=False)
-    description = db.Column(db.String(255), nullable=True)
+    description = db.Column(db.String(2048), nullable=True)
     created_at = db.Column(db.DateTime(), server_default=func.now())
 
     # Relations with User
@@ -107,13 +115,32 @@ class Project(db.Model):  # type: ignore
     )
 
     @classmethod
-    def add(cls, name: str, description: Optional[str], owner: User) -> Project:
+    def add(
+        cls, name: str, description: Optional[str], owner: User
+    ) -> Optional[Project]:
+        """
+        Add new project and map it to existing user.
+
+        This method can theoretically fail, since Project class uses UUID4 as primary_key.
+        """
         project = cls(name=name, description=description, owner_id=owner.id)
         # Make sure owner is also a participant in the project
         project.participants.append(owner)
 
         db.session.add(project)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+
+            # Second attempt to generate key
+            project.id = generate_key()
+            db.session.add(project)
+            try:
+                db.session.commit()
+            except IntegrityError:
+                db.session.rollback()
+                return None
 
         return project
 
@@ -130,6 +157,10 @@ def register_db_utils(app: Flask) -> None:
             user_c = User.add("someone@somewhere.com", "luigi", "betterthanmario")
 
             project_a = Project.add("niceOne", "A description.", user_a)
+
+            if project_a is None:
+                raise Exception("Failed to create project_a")
+
             Project.add("myProject", None, user_a)
             Project.add("princess", "No need for description.", user_c)
             Project.add("someProject", "Some description.", user_a)
@@ -137,6 +168,9 @@ def register_db_utils(app: Flask) -> None:
             Project.add("anotherProject", "Another description.", user_a)
             Project.add("yetAnotherProject", None, user_a)
             project_h = Project.add("andAnotherOne", None, user_b)
+
+            if project_h is None:
+                raise Exception("Failed to create project_h")
 
             project_a.participants.append(user_b)
             project_a.participants.append(user_c)

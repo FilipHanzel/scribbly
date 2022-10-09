@@ -45,7 +45,7 @@ def get_recent_projects(recent_projects_ids: list[str]) -> list[Project]:
         project
         for recent_id in recent_projects_ids
         for project in current_user.projects
-        if str(project.id) == recent_id
+        if project.id == recent_id
     ]
 
 
