@@ -1,3 +1,50 @@
 {% extends "base.html" %}
 
-{% block content %}Create project{% endblock %}
+{% block style %}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/project/create.css')}}"/>
+{% endblock %}
+
+{% block content %}
+    <div id="create-project-content">
+        <div class="create-project-form-wrapper">
+
+            <div class="title">Create project</div>
+
+            <form id="create-project-form"
+                  method="post"
+                  action="{{ url_for('project.create') }}"
+                  novalidate>
+
+                {{ create_project_form.csrf_token }}
+
+                <fieldset>
+                    {{ create_project_form.name(size=20, placeholder=" ") }}
+                    {{ create_project_form.name.label }}
+                    <ul class="form-errors">
+                        {% if create_project_form.name.errors %}
+                            {% for error in create_project_form.name.errors %}<li>{{ error }}</li>{% endfor %}
+                        {% endif %}
+                    </ul>
+                </fieldset>
+
+                <fieldset>
+                    {{ create_project_form.description(size=20, placeholder=" ") }}
+                    {{ create_project_form.description.label }}
+                    <ul class="form-errors">
+                        {% if create_project_form.description.errors %}
+                            {% for error in create_project_form.description.errors %}<li>{{ error }}</li>{% endfor %}
+                        {% endif %}
+                    </ul>
+                </fieldset>
+
+                <input type="submit" value="Create" />
+
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="module" src="{{ url_for('static', filename='js/common/form_validation.js') }}"></script>
+{% endblock %}

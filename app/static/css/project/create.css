@@ -1,0 +1,130 @@
+/* || Hack for annoying autofill styles on chrome */
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+  transition: background-color 0s, color 0s;
+  transition-delay: 999999999s;
+}
+
+#create-project-content {
+  --dark-blue: #1c406c;
+  --light-green: #b6efa9;
+  --dark-green: #9ae38a;
+
+  margin-top: min(100px, 10vh);
+}
+
+.create-project-form-wrapper {
+  width: min(350px, 95%);
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  margin: auto;
+
+  background-color: #ffffff50;
+  box-shadow: 5px 5px 15px 0 rgba(0, 0, 0, 0.3);
+}
+
+.create-project-form-wrapper .title {
+  font-size: 36px;
+
+  margin-left: min(120px, 10%);
+  margin-bottom: 20px;
+}
+
+#create-project-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+#create-project-form * {
+  font-size: 16px;
+}
+
+#create-project-form fieldset {
+  margin: auto;
+  padding: 0;
+  width: 90%;
+  position: relative;
+  border: none;
+
+  --field-height: min(24px, 10vw);
+}
+
+#create-project-form fieldset label,
+#create-project-form fieldset input {
+  margin: 0;
+  padding: 0;
+  padding-top: var(--field-height);
+  width: 100%;
+}
+
+#create-project-form fieldset label {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  transform-origin: 0 0;
+  transition: transform 0.1s ease-in-out;
+}
+
+#create-project-form fieldset input {
+  border: none;
+  border-bottom: 2px solid var(--dark-blue);
+
+  color: var(--dark-blue);
+
+  background-color: unset;
+  outline: none;
+}
+
+/* Label interactions */
+
+#create-project-form fieldset input:not([type="checkbox"]):focus + label,
+#create-project-form
+  fieldset
+  input:not([type="checkbox"]):not(:placeholder-shown)
+  + label,
+#create-project-form fieldset input:not([type="checkbox"]):hover + label {
+  transform: translateY(calc(var(--field-height) * -0.7)) scale(0.8);
+}
+
+/* Validation erros */
+
+#create-project-form .form-errors,
+#create-project-form .form-errors li {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  color: rgb(229, 56, 56);
+}
+
+/* Submit button */
+
+#create-project-form input[type="submit"] {
+  cursor: pointer;
+
+  width: 90%;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  margin: auto;
+
+  border: none;
+}
+
+#create-project-form input[type="submit"] {
+  background-color: var(--dark-blue);
+  color: #fff;
+
+  transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+#create-project-form input[type="submit"]:hover {
+  background-color: var(--light-green);
+  color: var(--dark-blue);
+}
+
+#create-project-form input[type="submit"]:active {
+  background-color: var(--dark-green);
+}
